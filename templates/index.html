@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PyVote</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 {
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px;
+            margin: 0;
+            text-align: center;
+            width: 100%;
+        }
+        nav {
+            background-color: #333;
+            width: 100%;
+            padding: 10px 0;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px;
+            padding: 20px;
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .poll-option {
+            margin-bottom: 10px;
+        }
+        .poll {
+            margin-bottom: 20px;
+        }
+        .poll h3 {
+            margin: 0;
+        }
+        .poll ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .poll ul li {
+            margin: 5px 0;
+        }
+        .poll form {
+            margin-top: 10px;
+        }
+        .poll form input {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>PyVote</h1>
+    <nav>
+        <a href="/">Home</a>
+        <a href="/about">About PyVote</a>
+    </nav>
+    <div class="container" id="create-poll-form">
+        <h2>Create a New Poll</h2>
+        <form id="poll-form" action="/create_poll" method="POST">
+            <div class="poll-option">
+                <label for="question">Poll Question:</label>
+                <input type="text" name="question" id="question" required>
+            </div>
+            <div class="poll-option">
+                <label for="options">Options (comma separated):</label>
+                <input type="text" name="options" id="options" required>
+            </div>
+            <button type="submit">Create Poll</button>
+        </form>
+    </div>
+
+    <div class="container" id="poll-container">
+        <h2>Active Polls</h2>
+        <ul id="poll-list">
+            {% for poll_id, poll in polls.items() %}
+            <li class="poll">
+                <h3>{{ poll['question'] }}</h3>
+                <ul>
+                    {% for option, votes in poll['options'].items() %}
+                    <li>
+                        {{ option }}: {{ votes }} votes
+                        <form action="/submit_vote/{{ poll_id }}" method="POST">
+                            <input type="radio" name="option" value="{{ option }}" required> Vote
+                            <button type="submit">Vote</button>
+                        </form>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </li>
+            {% else %}
+            <p>No active polls available.</p>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>
